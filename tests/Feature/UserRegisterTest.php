@@ -45,7 +45,7 @@ it('fails to register a user with invalid data', function () {
     ]);
 });
 it('can login a registered user ', function () {
-     User::create([
+    $user = User::create([
         'name' => 'Supun Nethsara',
         'email' => 'supun@example.com',
         'phone' => '0771234567',
