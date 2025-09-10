@@ -42,3 +42,4 @@ it('fails to register a user with invalid data', function () {
         'password',
     ]);
 });
+

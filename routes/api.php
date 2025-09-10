@@ -8,3 +8,4 @@ Route::get('/hello', function () {
 });
 //User
 Route::post('register' ,[\App\Http\Controllers\AuthController::class ,'Register']);
+Route::post('login' ,[\App\Http\Controllers\AuthController::class ,'login']);
