@@ -62,3 +62,23 @@ it('can login a registered user ', function () {
             'token',
         ]);
 });
+it('fails to login with invalid credentials', function () {
+
+    User::create([
+        'name' => 'Supun Nethsara',
+        'email' => 'supun@example.com',
+        'phone' => '0771234567',
+        'role' => 'admin',
+        'password' => Hash::make('password123'),
+    ]);
+
+    $response = $this->postJson('/api/login', [
+        'email' => 'supun@example.com',
+        'password' => 'wrongpassword',
+    ]);
+
+    $response->assertStatus(401)
+        ->assertJson([
+            'message' => 'Invalid credentials',
+        ]);
+});
