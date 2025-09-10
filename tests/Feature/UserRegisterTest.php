@@ -23,3 +23,22 @@ it('can register a user', function () {
         'role' => 'admin',
     ]);
 });
+it('fails to register a user with invalid data', function () {
+    $response = $this->postJson('/api/register', [
+        'name' => '',
+        'email' => 'not-an-email',
+        'phone' => '',
+        'role' => '',
+        'password' => '123',
+        'password_confirmation' => '456',
+    ]);
+
+    $response->assertStatus(422)
+    ->assertJsonValidationErrors([
+        'name',
+        'email',
+        'phone',
+        'role',
+        'password',
+    ]);
+});
