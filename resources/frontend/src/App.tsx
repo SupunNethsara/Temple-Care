@@ -1,14 +1,12 @@
-import './App.css'
+import "./App.css";
 import Main from "./Web/web components/Main.tsx";
 
 function App() {
-
-
-  return (
-    <>
-<Main/>
-    </>
-  )
+    return (
+        <>
+            <Main />
+        </>
+    );
 }
 
-export default App
+export default App;

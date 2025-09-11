@@ -3,7 +3,7 @@ import Home from "./Home.tsx";
 function Main() {
     return (
         <div>
-            <Home/>
+            <Home />
         </div>
     );
 }
