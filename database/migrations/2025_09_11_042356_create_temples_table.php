@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('temples', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->string('location');
+            $table->string('contact', 15);
+            $table->string('currency')->default('LKR');
+            $table->date('time_zone');
             $table->timestamps();
         });
     }
