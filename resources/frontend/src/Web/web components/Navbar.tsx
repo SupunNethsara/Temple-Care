@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import type { NavbarProps } from "../../Utils/PropTypes";
 
-function Navbar() {
+function Navbar({ onOpenLogin, onOpenRegister }:NavbarProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -18,18 +19,17 @@ function Navbar() {
                 </div>
 
                 <div className="hidden md:flex space-x-4 lg:space-x-8">
-                    <a href="#" className="text-white hover:text-amber-300 transition-colors font-sinhala text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>මුල් පිටුව</a>
-                    <a href="#" className="text-white hover:text-amber-300 transition-colors font-sinhala text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>පිළිබඳව</a>
-                    <a href="#" className="text-white hover:text-amber-300 transition-colors font-sinhala text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>නවතම</a>
-                    <a href="#" className="text-white hover:text-amber-300 transition-colors font-sinhala text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>සම්බන්ධ වන්න</a>
+                    <a href="#" className="text-white hover:text-amber-300 transition-colors text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>මුල් පිටුව</a>
+                    <a href="#" className="text-white hover:text-amber-300 transition-colors text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>පිළිබඳව</a>
+                    <a href="#" className="text-white hover:text-amber-300 transition-colors text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>නවතම</a>
+                    <a href="#" className="text-white hover:text-amber-300 transition-colors text-base lg:text-xl py-2 px-2 lg:px-3 rounded-md hover:bg-white/5" style={{ fontFamily: "'Abhaya Libre', serif" }}>සම්බන්ධ වන්න</a>
                 </div>
 
-                {/* Desktop Buttons */}
                 <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-                    <button className="text-white hover:text-amber-300 transition-colors py-1.5 px-3 lg:py-2 lg:px-4 rounded-md hover:bg-white/5 text-sm lg:text-base" style={{ fontFamily: "'Abhaya Libre', serif" }}>
+                    <button onClick={onOpenLogin} className="text-white hover:text-amber-300 transition-colors py-1.5 px-3 lg:py-2 lg:px-4 rounded-md hover:bg-white/5 text-sm lg:text-base" style={{ fontFamily: "'Abhaya Libre', serif" }}>
                         පිවිසෙන්න
                     </button>
-                    <button className="bg-[#ff9d00] text-white py-1.5 px-4 lg:py-2 lg:px-6 rounded-md hover:bg-amber-700 transition-colors shadow-md text-sm lg:text-base" style={{ fontFamily: "'Abhaya Libre', serif" }}>
+                    <button onClick={onOpenRegister} className="bg-[#ff9d00] text-white py-1.5 px-4 lg:py-2 lg:px-6 rounded-md hover:bg-amber-700 transition-colors shadow-md text-sm lg:text-base" style={{ fontFamily: "'Abhaya Libre', serif" }}>
                         ලියාපදිංචි
                     </button>
                 </div>
@@ -61,10 +61,10 @@ function Navbar() {
                         <a href="#" className="text-white hover:text-amber-300 transition-colors text-lg py-3 px-4 rounded-md hover:bg-white/10" style={{ fontFamily: "'Abhaya Libre', serif" }}>සම්බන්ධ වන්න</a>
 
                         <div className="pt-4 border-t border-white/20 flex flex-col space-y-3">
-                            <button className="text-white hover:text-amber-300 transition-colors py-3 px-4 rounded-md hover:bg-white/10 text-lg" style={{ fontFamily: "'Abhaya Libre', serif" }}>
+                            <button onClick={onOpenLogin} className="text-white hover:text-amber-300 transition-colors py-3 px-4 rounded-md hover:bg-white/10 text-lg" style={{ fontFamily: "'Abhaya Libre', serif" }}>
                                 පිවිසෙන්න
                             </button>
-                            <button className="bg-[#ff9d00] text-white py-3 px-4 rounded-md hover:bg-amber-700 transition-colors text-lg" style={{ fontFamily: "'Abhaya Libre', serif" }}>
+                            <button onClick={onOpenRegister} className="bg-[#ff9d00] text-white py-3 px-4 rounded-md hover:bg-amber-700 transition-colors text-lg" style={{ fontFamily: "'Abhaya Libre', serif" }}>
                                 ලියාපදිංචි
                             </button>
                         </div>
