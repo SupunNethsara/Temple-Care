@@ -1,5 +1,3 @@
-import {CancelToken} from "axios";
-
 export interface RegistrationFormProps {
     onClose: () => void;
     onSwitchToLogin: () => void;
@@ -7,7 +5,7 @@ export interface RegistrationFormProps {
 export interface LoginFormProps {
     onClose: () => void;
     onSwitchToRegister: () => void;
-    onLoginSuccess:(user, token: CancelToken) => void;
+    onLoginSuccess: (user: any, token: string) => void;
 }
 export  interface NavbarProps {
     onOpenLogin: () => void;

@@ -1,5 +1,6 @@
+
 import "./App.css";
-import Main from "./Web/web components/Main.tsx";
+import Main from "./Web/web components/Main";
 
 function App() {
     return (

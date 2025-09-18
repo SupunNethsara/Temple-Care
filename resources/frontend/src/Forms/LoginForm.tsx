@@ -1,9 +1,9 @@
+// LoginForm.tsx
 import { useState } from 'react';
 import axios from 'axios';
-import type {LoginFormProps} from "../Utils/PropTypes";
+import type { LoginFormProps } from "../Utils/PropTypes";
 
-
-function LoginForm({ onClose, onSwitchToRegister, onLoginSuccess }:LoginFormProps) {
+function LoginForm({ onClose, onSwitchToRegister, onLoginSuccess }: LoginFormProps) {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -12,35 +12,37 @@ function LoginForm({ onClose, onSwitchToRegister, onLoginSuccess }:LoginFormProp
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            const response = await axios.post('/api/login', {
+            const response = await axios.post('http://127.0.0.1:8000/api/login', {
                 email: formData.email,
                 password: formData.password
             });
 
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            console.log('Login response:', response);
 
+            if (response.data && response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
 
-            if (onLoginSuccess) {
                 onLoginSuccess(response.data.user, response.data.token);
+                onClose();
+            } else {
+                throw new Error('Invalid response format from server');
             }
-
-            onClose();
-
-        } catch (err : any) {
+        } catch (err: any) {
+            console.error('Login error:', err);
             setError(err.response?.data?.message || 'Login failed. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleChange = (e:any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({
             ...formData,
