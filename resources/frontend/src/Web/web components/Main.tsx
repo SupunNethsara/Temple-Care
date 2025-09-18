@@ -4,7 +4,7 @@ import { useState } from "react";
 import LoginForm from "../../Forms/LoginForm";
 import RegistrationForm from "../../Forms/RegistrationForm";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import MainDashboard from "../../Components/User Dashboard/MainDashboard";
+import { MainDashboard } from "../../Components/User Dashboard/MainDashboard";
 
 function Main() {
     const [showLogin, setShowLogin] = useState(false);

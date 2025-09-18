@@ -4,6 +4,7 @@ function CheckingStats() {
     return (
         <div>
             <Stats />
+            <CheckingStats/>
         </div>
     );
 }
