@@ -1,13 +1,25 @@
 import { useState } from "react";
 import { LogOutModal } from "./LogOutModal.tsx";
+import axios from "axios";
 
 function UserDbNavbar() {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-    const handleSignOut = () => {
-
-        console.log("User signed out");
-        alert("සාදරයෙන් පිටවන්න! (Signed out successfully!)");
+    const handleSignOut = async () => {
+        const response = await axios.post('http://localhost:8000/api/logout',
+            {},
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Accept': 'application/json',
+                }
+            }
+        );
+        if (response.status === 200) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
     };
 
     return (
