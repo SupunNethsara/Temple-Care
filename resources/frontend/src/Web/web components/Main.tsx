@@ -4,7 +4,8 @@ import { useState } from "react";
 import LoginForm from "../../Forms/LoginForm";
 import RegistrationForm from "../../Forms/RegistrationForm";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import MainDashboard from "../../Components/User Dashboard/MainDashboard";
+import { MainDashboard } from "../../Components/User Dashboard/MainDashboard";
+import CheckingStats from "../../Components/User Dashboard/Routing/CheckingStats.tsx";
 
 function Main() {
     const [showLogin, setShowLogin] = useState(false);
@@ -56,7 +57,9 @@ function Main() {
 
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/MainDashboard" element={<MainDashboard />} />
+                <Route path="/MainDashboard" element={<MainDashboard />} >
+                    <Route index element={<CheckingStats />} />
+                </Route>
             </Routes>
         </div>
     );
