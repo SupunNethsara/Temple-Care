@@ -1,6 +1,5 @@
 function UserDbNavbar() {
     const handleSignOut = () => {
-        // Add sign out logic here
         console.log("User signed out");
         alert("සාදරයෙන් පිටවන්න! (Signed out successfully!)");
     };
@@ -24,7 +23,6 @@ function UserDbNavbar() {
                     </div>
 
                     <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-                        {/* Action Buttons */}
                         <div className="flex flex-wrap justify-center gap-2">
                             <button
                                 className="bg-amber-100 hover:bg-amber-200 text-amber-800 py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center"
@@ -42,7 +40,6 @@ function UserDbNavbar() {
                             </button>
                         </div>
 
-                        {/* User Info and Sign Out */}
                         <div className="flex items-center space-x-4 bg-amber-600/30 p-2 rounded-lg">
                             <div className="text-right border-r border-amber-500 pr-4">
                                 <p className="font-semibold">පරිශීලක</p>
