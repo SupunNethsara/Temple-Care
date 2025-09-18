@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
@@ -80,5 +81,23 @@ it('fails to login with invalid credentials', function () {
     $response->assertStatus(401)
         ->assertJson([
             'message' => 'Invalid credentials',
+        ]);
+});
+it('User can logout', function () {
+    $user = User::factory()->create([
+        'name' => 'Supun Nethsara',
+        'email' => 'supun@example.com',
+        'phone' => '0771234567',
+        'role' => 'admin',
+        'password' => Hash::make('password123'),
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $logoutResponse = $this->postJson('/api/logout');
+
+    $logoutResponse->assertStatus(200)
+        ->assertJson([
+            'message' => 'Successfully logged out',
         ]);
 });
