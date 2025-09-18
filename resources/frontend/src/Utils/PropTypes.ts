@@ -7,6 +7,8 @@ export interface LoginFormProps {
     onSwitchToRegister: () => void;
     onLoginSuccess: (user: any, token: string) => void;
 }
+
+
 export  interface NavbarProps {
     onOpenLogin: () => void;
     onOpenRegister: () => void;
