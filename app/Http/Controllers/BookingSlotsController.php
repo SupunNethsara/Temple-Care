@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\BookingSlotsRequest;
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class BookingSlotsController extends Controller
 {
-    public function store(Request $request)
+    public function store(BookingSlotsRequest $request)
     {
         $data = $request->validated();
         $exists = Booking::where('slot_id' ,$data['slot_id'])->where('date', $data['date'])->exists();
