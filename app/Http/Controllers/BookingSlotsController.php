@@ -11,11 +11,7 @@ class BookingSlotsController extends Controller
 {
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'user_id' => 'required|uuid|exists:users,id',
-            'slot_id' => 'required|exists:slots,id',
-            'date' => 'required|date',
-        ]);
+        $data = $request->validated();
         $exists = Booking::where('slot_id' ,$data['slot_id'])->where('date', $data['date'])->exists();
 
         if ($exists) {
