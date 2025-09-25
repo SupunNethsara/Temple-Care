@@ -17,12 +17,14 @@ class BookingFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = \App\Models\Booking::class;
+
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'slot_id' => Slot::factory(),
-            'date' => $this->faker->date(),
+            'user_id' => User::factory()->create()->id,
+            'slot_id' => Slot::factory()->create()->id,
+            'date' => $this->faker->date('Y-m-d'),
         ];
     }
+
 }

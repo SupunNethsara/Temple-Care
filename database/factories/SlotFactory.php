@@ -19,6 +19,7 @@ class SlotFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => $this->faker->unique()->randomNumber(),
             'slot_name' => $this->faker->randomElement(['Morning', 'Afternoon']),
             'time' => $this->faker->time('H:i') . ' - ' . $this->faker->time('H:i', 'now'),
         ];
