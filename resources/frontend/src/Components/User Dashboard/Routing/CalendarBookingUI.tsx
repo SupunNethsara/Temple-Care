@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface Booking {
     id: number;
-    user_id: number;
+    user_id: string;
     slot_id: number;
     date: string;
 }
@@ -16,7 +16,7 @@ interface TimeSlot {
 }
 
 interface BookingRequest {
-    user_id: number;
+    user_id: string;
     slot_id: number;
     date: string;
 }
@@ -38,7 +38,6 @@ export default function CalendarBookingUI() {
         fetchBookings();
         fetchTimeSlots();
     }, []);
-
 
     const isPastDate = (date: Date): boolean => {
         const today = new Date();
@@ -76,17 +75,11 @@ export default function CalendarBookingUI() {
     const generateDays = (date: Date) => {
         const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
         const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-        // Get the day of the week for the first day (0 = Sunday)
         const firstDayOfWeek = startOfMonth.getDay();
         const days = [];
 
-        // Add empty cells for days before the first day of month
-        for (let i = 0; i < firstDayOfWeek; i++) {
-            days.push(null);
-        }
+        for (let i = 0; i < firstDayOfWeek; i++) days.push(null);
 
-        // Add days of the month
         for (let i = 1; i <= endOfMonth.getDate(); i++) {
             days.push(new Date(date.getFullYear(), date.getMonth(), i));
         }
@@ -117,6 +110,15 @@ export default function CalendarBookingUI() {
         );
     };
 
+    let user_id: string;
+    const userString = localStorage.getItem('user');
+    if (userString) {
+        const user = JSON.parse(userString) as { id: string };
+        user_id = user.id;
+    } else {
+        throw new Error("User not found in localStorage");
+    }
+
     const handleBooking = async () => {
         if (!selectedSlot) {
             showMessage('error', 'කරුණාකර වේලාවක් තෝරන්න');
@@ -131,7 +133,7 @@ export default function CalendarBookingUI() {
         setLoading(true);
         try {
             const bookingData: BookingRequest = {
-                user_id: 1,
+                user_id: user_id,
                 slot_id: selectedSlot,
                 date: selectedDate.toISOString().split('T')[0]
             };
