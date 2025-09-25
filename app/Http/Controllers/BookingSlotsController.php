@@ -16,7 +16,13 @@ class BookingSlotsController extends Controller
             'slot_id' => 'required|exists:slots,id',
             'date' => 'required|date',
         ]);
+        $exists = Booking::where('slot_id' ,$data['slot_id'])->where('date', $data['date'])->exists();
 
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'slot_id' => ['This slot is already booked for the selected date.'],
+            ]);
+        }
         $booking = Booking::create($data);
 
 
