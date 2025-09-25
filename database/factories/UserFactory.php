@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -11,6 +12,11 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    /**
+     * The name of the factory's corresponding model.
+     */
+    protected $model = User::class;
+
     /**
      * The current password being used by the factory.
      */
@@ -24,10 +30,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'id' => (string) Str::uuid(),
+            'name' => $this->faker->name(),
+            'phone' => $this->faker->phoneNumber(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('password'), // hashed password
+            'role' => $this->faker->randomElement(['user', 'admin', 'manager']), // random role
             'remember_token' => Str::random(10),
         ];
     }
@@ -39,6 +48,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate a specific role for the user.
+     */
+    public function role(string $role): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => $role,
         ]);
     }
 }
