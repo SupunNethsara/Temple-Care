@@ -11,3 +11,5 @@ Route::post('register' ,[\App\Http\Controllers\AuthController::class ,'Register'
 Route::post('login' ,[\App\Http\Controllers\AuthController::class ,'login']);
 Route::middleware('auth:sanctum')->post('logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
+//Booking slots
+
