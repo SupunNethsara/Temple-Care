@@ -10,6 +10,15 @@ use Illuminate\Validation\ValidationException;
 
 class BookingSlotsController extends Controller
 {
+    public function index()
+    {
+        $bookings = Booking::all();
+
+        return response()->json([
+            'data' => $bookings
+        ], 200);
+    }
+
     public function store(BookingSlotsRequest $request)
     {
         $data = $request->validated();

@@ -42,3 +42,10 @@ it('cannot book the same slot for the same date twice', function () {
 
     $response->assertStatus(422);
 });
+it('can list all bookings', function () {
+    \App\Models\Booking::factory()->count(3)->create();
+
+    $response = $this->getJson('/api/booking');
+    $response->assertStatus(200)
+        ->assertJsonCount(3, 'data');
+});
