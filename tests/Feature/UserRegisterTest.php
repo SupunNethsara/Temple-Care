@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 
-uses(RefreshDatabase::class);
+uses (RefreshDatabase::class);
 
 it('can register a user', function () {
     $response = $this->postJson('/api/register', [
@@ -101,3 +101,4 @@ it('User can logout', function () {
             'message' => 'Successfully logged out',
         ]);
 });
+
