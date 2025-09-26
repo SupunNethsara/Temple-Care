@@ -6,25 +6,25 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BookingSlotsRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'user_id' => 'required|uuid|exists:users,id',
-            'slot_id' => 'required|exists:slots,id',
-            'date' => 'required|date'
+            'time_slot' => 'required|string|in:08:00-09:00,09:00-10:00,10:00-11:00,11:00-12:00,14:00-15:00,15:00-16:00,16:00-17:00',
+            'date' => 'required|date|after_or_equal:today'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'time_slot.in' => 'The selected time slot is not available.',
+            'date.after_or_equal' => 'You cannot book for past dates.',
         ];
     }
 }

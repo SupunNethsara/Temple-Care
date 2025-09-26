@@ -9,7 +9,7 @@ class Slot extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['slot_name', 'time'];
+    protected $fillable = ['slot_name', 'start_time', 'end_time'];
 
     public function bookings()
     {

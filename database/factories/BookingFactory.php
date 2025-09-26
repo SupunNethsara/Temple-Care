@@ -2,29 +2,26 @@
 
 namespace Database\Factories;
 
-use App\Models\Slot;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Booking>
- */
 class BookingFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    protected $model = \App\Models\Booking::class;
-
     public function definition(): array
     {
+        $timeSlots = [
+            '08:00-09:00',
+            '09:00-10:00',
+            '10:00-11:00',
+            '11:00-12:00',
+            '14:00-15:00',
+            '15:00-16:00',
+            '16:00-17:00'
+        ];
+
         return [
-            'user_id' => User::factory()->create()->id,
-            'slot_id' => Slot::factory()->create()->id,
-            'date' => $this->faker->date('Y-m-d'),
+            'user_id' => \App\Models\User::factory(),
+            'time_slot' => $this->faker->randomElement($timeSlots),
+            'date' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
         ];
     }
-
 }

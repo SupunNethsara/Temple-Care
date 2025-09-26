@@ -3,31 +3,36 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 
 interface Booking {
-    id: number;
+    id: string;
     user_id: string;
-    slot_id: number;
+    time_slot: string;
     date: string;
-}
-
-interface TimeSlot {
-    id: number;
-    start_time: string;
-    end_time: string;
 }
 
 interface BookingRequest {
     user_id: string;
-    slot_id: number;
+    time_slot: string;
     date: string;
 }
+
+
+const TIME_SLOTS = [
+    "08:00-09:00",
+    "09:00-10:00",
+    "10:00-11:00",
+    "11:00-12:00",
+    "14:00-15:00",
+    "15:00-16:00",
+    "16:00-17:00"
+];
 
 export default function CalendarBookingUI() {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [bookings, setBookings] = useState<Booking[]>([]);
-    const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-    const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+    const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
     const monthNames = [
         "ජනවාරි", "පෙබරවාරි", "මාර්තු", "අප්රේල්", "මැයි", "ජූනි",
@@ -35,8 +40,21 @@ export default function CalendarBookingUI() {
     ];
 
     useEffect(() => {
+        const userString = localStorage.getItem('user');
+        if (userString) {
+            try {
+                const user = JSON.parse(userString) as { id: string };
+                setUserId(user.id);
+            } catch {
+                setUserId(null);
+            }
+        } else {
+            setUserId(null);
+        }
+    }, []);
+
+    useEffect(() => {
         fetchBookings();
-        fetchTimeSlots();
     }, []);
 
     const isPastDate = (date: Date): boolean => {
@@ -52,23 +70,6 @@ export default function CalendarBookingUI() {
         } catch (error) {
             console.error('Error fetching bookings:', error);
             showMessage('error', 'දත්ත ලබා ගැනීමට නොහැකි විය');
-        }
-    };
-
-    const fetchTimeSlots = async () => {
-        try {
-            const response = await axios.get('http://localhost:8000/api/time-slots');
-            setTimeSlots(response.data.data);
-        } catch (error) {
-            console.error('Error fetching time slots:', error);
-            setTimeSlots([
-                { id: 1, start_time: "08:00", end_time: "09:00" },
-                { id: 2, start_time: "09:00", end_time: "10:00" },
-                { id: 3, start_time: "10:00", end_time: "11:00" },
-                { id: 4, start_time: "14:00", end_time: "15:00" },
-                { id: 5, start_time: "15:00", end_time: "16:00" },
-                { id: 6, start_time: "16:00", end_time: "17:00" },
-            ]);
         }
     };
 
@@ -103,21 +104,12 @@ export default function CalendarBookingUI() {
         setSelectedSlot(null);
     };
 
-    const isSlotBooked = (slotId: number, date: Date) => {
+    const isSlotBooked = (timeSlot: string, date: Date) => {
         const dateString = date.toISOString().split('T')[0];
         return bookings.some(booking =>
-            booking.slot_id === slotId && booking.date === dateString
+            booking.time_slot === timeSlot && booking.date === dateString
         );
     };
-
-    let user_id: string;
-    const userString = localStorage.getItem('user');
-    if (userString) {
-        const user = JSON.parse(userString) as { id: string };
-        user_id = user.id;
-    } else {
-        throw new Error("User not found in localStorage");
-    }
 
     const handleBooking = async () => {
         if (!selectedSlot) {
@@ -130,16 +122,20 @@ export default function CalendarBookingUI() {
             return;
         }
 
+        if (!userId) {
+            showMessage('error', 'පරිශීලකයා හඳුනාගත නොහැක');
+            return;
+        }
+
         setLoading(true);
         try {
             const bookingData: BookingRequest = {
-                user_id: user_id,
-                slot_id: selectedSlot,
+                user_id: userId,
+                time_slot: selectedSlot,
                 date: selectedDate.toISOString().split('T')[0]
             };
 
-            const response = await axios.post('http://localhost:8000/api/booking', bookingData);
-            console.log(response);
+            await axios.post('http://localhost:8000/api/booking', bookingData);
             showMessage('success', 'දානය සාර්ථකව ලියාපදිංචි කළා!');
             setSelectedSlot(null);
             await fetchBookings();
@@ -167,6 +163,14 @@ export default function CalendarBookingUI() {
             weekday: 'long'
         });
     };
+
+    if (userId === null) {
+        return (
+            <div className="p-6 text-red-600">
+                User not found. Please log in to continue.
+            </div>
+        );
+    }
 
     return (
         <div className="md:flex gap-6 p-6">
@@ -239,16 +243,16 @@ export default function CalendarBookingUI() {
                     )}
 
                     <div className="grid grid-cols-2 gap-3 mb-6">
-                        {timeSlots.map((slot) => {
-                            const isBooked = isSlotBooked(slot.id, selectedDate);
-                            const isSelected = selectedSlot === slot.id;
+                        {TIME_SLOTS.map((slot) => {
+                            const isBooked = isSlotBooked(slot, selectedDate);
+                            const isSelected = selectedSlot === slot;
                             const isPast = isPastDate(selectedDate);
                             const isDisabled = isBooked || isPast;
 
                             return (
                                 <button
-                                    key={slot.id}
-                                    onClick={() => !isDisabled && setSelectedSlot(slot.id)}
+                                    key={slot}
+                                    onClick={() => !isDisabled && setSelectedSlot(slot)}
                                     disabled={isDisabled}
                                     className={`p-3 rounded-lg text-sm font-medium transition-colors
                                         ${isDisabled
@@ -259,7 +263,7 @@ export default function CalendarBookingUI() {
                                     `}
                                 >
                                     <div className="flex justify-between items-center">
-                                        <span>{slot.start_time} - {slot.end_time}</span>
+                                        <span>{slot}</span>
                                         {isBooked && (
                                             <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
                                                 වෙන්කර ඇත
