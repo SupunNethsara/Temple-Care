@@ -6,6 +6,7 @@ import RegistrationForm from "../../Forms/RegistrationForm";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { MainDashboard } from "../../Components/User Dashboard/MainDashboard";
 import CheckingStats from "../../Components/User Dashboard/Routing/CheckingStats.tsx";
+import Dana from "../../Components/User Dashboard/Routing/Dana.tsx";
 
 function Main() {
     const [showLogin, setShowLogin] = useState(false);
@@ -32,7 +33,7 @@ function Main() {
         navigate('/MainDashboard');
     };
 
-    const showNavbar = location.pathname !== "/MainDashboard";
+    const showNavbar = !location.pathname.startsWith("/MainDashboard");
 
     return (
         <div>
@@ -57,8 +58,9 @@ function Main() {
 
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/MainDashboard" element={<MainDashboard />} >
+                <Route path="/MainDashboard/*" element={<MainDashboard />} >
                     <Route index element={<CheckingStats />} />
+                    <Route path="danaevents" element={<Dana />} />
                 </Route>
             </Routes>
         </div>
