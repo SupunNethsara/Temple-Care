@@ -33,6 +33,10 @@ class BookingSlotsController extends Controller
     {
         $data = $request->validated();
 
+        return response()->json([
+           'data'=>$data,
+           'message'=>'Booking create successful'
+        ], 201);
 
     }
 
