@@ -175,8 +175,6 @@ export default function CalendarBookingUI() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 p-4 md:p-6">
             <div className="max-w-7xl mx-auto">
-                <Header />
-
                 <TabNavigation
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
@@ -217,13 +215,4 @@ export default function CalendarBookingUI() {
     );
 }
 
-const Header = () => (
-    <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-amber-900 mb-2">
-            දානය ලියාපදිංචි කිරීම
-        </h1>
-        <p className="text-amber-700 text-lg">
-            ඔබගේ දානය ලියාපදිංචි කිරීමට කැමති දිනය සහ වේලාව තෝරන්න
-        </p>
-    </div>
-);
+
