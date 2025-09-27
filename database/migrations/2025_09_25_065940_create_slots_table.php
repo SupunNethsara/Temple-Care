@@ -8,10 +8,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('slots', function (Blueprint $table) {
-            $table->id();
-            $table->string('slot_name');
-            $table->string('start_time');
-            $table->string('end_time');
+            $table->uuid('id')->primary();
+            $table->string('time_slot');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
         });
     }

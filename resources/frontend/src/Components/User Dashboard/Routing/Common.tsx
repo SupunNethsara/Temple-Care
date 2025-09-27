@@ -1,5 +1,5 @@
-import RecentActivities from "./RecentActivities.tsx";
-import UpcomingActivities from "./UpcomingActivities.tsx";
+import RecentActivities from "./Introscreen/RecentActivities.tsx";
+import UpcomingActivities from "./Introscreen/UpcomingActivities.tsx";
 
 function Common() {
     return (
