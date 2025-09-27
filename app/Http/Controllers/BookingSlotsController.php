@@ -33,6 +33,12 @@ class BookingSlotsController extends Controller
     {
         $data = $request->validated();
 
+        $booking = Booking::create([
+            'user_id' => $data['user_id'],
+            'time_slot' => $data['time_slot'],
+            'date' => $data['date']
+        ]);
+
         return response()->json([
            'data'=>$data,
            'message'=>'Booking create successful'
