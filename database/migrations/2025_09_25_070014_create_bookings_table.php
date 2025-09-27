@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('slot_id');
+            $table->string('time_slot'); // Add this
             $table->date('date');
             $table->timestamps();
 

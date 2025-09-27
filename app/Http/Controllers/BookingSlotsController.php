@@ -7,77 +7,72 @@ use App\Models\Booking;
 use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 
 class BookingSlotsController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $bookings = Booking::with(['user', 'slot'])->get();
-        if ($request->has('user_id')) {
-            $userBookings = Booking::with(['user', 'slot'])
-                ->where('user_id', $request->user_id)
-                ->get();
+        $date = $request->query('date', today()->format('Y-m-d'));
 
-            return response()->json([
-                'all_bookings' => $bookings,
-                'my_bookings' => $userBookings
-            ], 200);
-        }
+        $bookings = Booking::with(['user', 'slot'])
+            ->where('date', $date)
+            ->get();
+
+        $availableSlots = Slot::whereNotIn('id', function($query) use ($date) {
+            $query->select('slot_id')
+                ->from('bookings')
+                ->where('date', $date);
+        })->get();
 
         return response()->json([
-            'data' => $bookings
-        ], 200);
+            'bookings' => $bookings,
+            'available_slots' => $availableSlots,
+            'date' => $date
+        ]);
     }
 
-    public function store(BookingSlotsRequest $request)
+    public function store(BookingSlotsRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $booking = Booking::create([
-            'user_id' => $data['user_id'],
-            'time_slot' => $data['time_slot'],
-            'date' => $data['date']
-        ]);
+        $slot = Slot::where('time_slot', $data['time_slot'])->first();
 
-        return response()->json([
-           'data'=>$data,
-           'message'=>'Booking create successful'
-        ], 201);
+        if (!$slot) {
+            return response()->json([
+                'message' => 'Slot not found'
+            ], 404);
+        }
 
-    }
+        $existingBooking = Booking::where('slot_id', $slot->id)
+            ->where('date', $data['date'])
+            ->first();
 
-    public function availableSlots(Request $request)
-    {
-        $request->validate([
-            'date' => 'required|date'
-        ]);
+        if ($existingBooking) {
+            return response()->json([
+                'message' => 'This time slot is already booked for the selected date'
+            ], 422);
+        }
+        try {
+            $booking = Booking::create([
+                'user_id' => $data['user_id'],
+                'slot_id' => $slot->id,
+                'time_slot' => $data['time_slot'],
+                'date' => $data['date']
+            ]);
 
-        $date = $request->input('date');
+            $booking->load(['user', 'slot']);
 
-        $allSlots = Slot::all()->pluck('slot_name')->toArray();
+            return response()->json([
+                'message' => 'Booking created successfully',
+                'booking' => $booking
+            ], 201);
 
-        $bookedSlots = Booking::where('date', $date)
-            ->pluck('time_slot')
-            ->toArray();
-
-        $availableSlots = array_diff($allSlots, $bookedSlots);
-
-        return response()->json([
-            'date' => $date,
-            'available_slots' => array_values($availableSlots),
-            'booked_slots' => $bookedSlots
-        ], 200);
-    }
-    public function myBookings($userId)
-    {
-        $bookings = Booking::with(['user', 'slot'])
-            ->where('user_id', $userId)
-            ->orderBy('date', 'desc')
-            ->orderBy('time_slot')
-            ->get();
-
-        return response()->json([
-            'data' => $bookings
-        ], 200);
+        } catch (QueryException $e) {
+            return response()->json([
+                'message' => 'Failed to create booking',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

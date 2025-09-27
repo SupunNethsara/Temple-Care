@@ -13,6 +13,7 @@ class Booking extends Model
     protected $fillable = [
         'user_id',
         'slot_id',
+        'time_slot', // Keep for convenience, but slot_id is primary
         'date'
     ];
 
@@ -28,5 +29,13 @@ class Booking extends Model
     public function slot()
     {
         return $this->belongsTo(Slot::class);
+    }
+
+    // Scope to check availability
+    public function scopeAvailable($query, $slotId, $date)
+    {
+        return $query->where('slot_id', $slotId)
+            ->where('date', $date)
+            ->doesntExist();
     }
 }

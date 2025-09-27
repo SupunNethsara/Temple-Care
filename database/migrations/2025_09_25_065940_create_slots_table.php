@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('slots', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('time_slot'); // "08:00-09:00"
+            $table->string('time_slot');
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();
