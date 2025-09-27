@@ -14,7 +14,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 
-Route::apiResource('bookings', BookingSlotsController::class);
+Route::apiResource('booking', BookingSlotsController::class);
 Route::apiResource('slots', \App\Http\Controllers\SlotController::class);
 
 Route::get('available-slots', [BookingSlotsController::class, 'availableSlots']);

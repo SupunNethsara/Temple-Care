@@ -19,7 +19,7 @@ it('can create a booking', function () {
         'date' => now()->addDays(1)->format('Y-m-d')
     ];
 
-    $response = $this->postJson('/api/bookings', $bookingData);
+    $response = $this->postJson('/api/booking', $bookingData);
 
     $response->assertStatus(201)
         ->assertJson([
@@ -46,7 +46,7 @@ it('lists available slots for a date', function () {
         'date' => $date
     ]);
 
-    $response = $this->getJson("/api/bookings?date={$date}");
+    $response = $this->getJson("/api/booking?date={$date}");
 
     $response->assertStatus(200)
         ->assertJsonStructure([

@@ -32,6 +32,23 @@ class BookingSlotsController extends Controller
         ]);
     }
 
+    // Add this missing method
+    public function availableSlots(Request $request): JsonResponse
+    {
+        $date = $request->query('date', today()->format('Y-m-d'));
+
+        $bookedSlotIds = Booking::where('date', $date)
+            ->pluck('slot_id')
+            ->toArray();
+
+        $availableSlots = Slot::whereNotIn('id', $bookedSlotIds)->get();
+
+        return response()->json([
+            'date' => $date,
+            'available_slots' => $availableSlots
+        ]);
+    }
+
     public function store(BookingSlotsRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -53,6 +70,7 @@ class BookingSlotsController extends Controller
                 'message' => 'This time slot is already booked for the selected date'
             ], 422);
         }
+
         try {
             $booking = Booking::create([
                 'user_id' => $data['user_id'],
