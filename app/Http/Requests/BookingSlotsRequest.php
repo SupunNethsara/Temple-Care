@@ -15,7 +15,7 @@ class BookingSlotsRequest extends FormRequest
     {
         return [
             'user_id' => 'required|uuid|exists:users,id',
-            'time_slot' => 'required|string|in:08:00-09:00,09:00-10:00,10:00-11:00,11:00-12:00,14:00-15:00,15:00-16:00,16:00-17:00',
+            'time_slot' => 'required',
             'date' => 'required|date|after_or_equal:today'
         ];
     }

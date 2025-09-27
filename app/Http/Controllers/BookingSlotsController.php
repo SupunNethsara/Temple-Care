@@ -4,54 +4,73 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingSlotsRequest;
 use App\Models\Booking;
+use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 
 class BookingSlotsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with('user')->get();
+        $bookings = Booking::with(['user', 'slot'])->get();
+        if ($request->has('user_id')) {
+            $userBookings = Booking::with(['user', 'slot'])
+                ->where('user_id', $request->user_id)
+                ->get();
+
+            return response()->json([
+                'all_bookings' => $bookings,
+                'my_bookings' => $userBookings
+            ], 200);
+        }
 
         return response()->json([
             'data' => $bookings
         ], 200);
     }
+
     public function store(BookingSlotsRequest $request)
     {
         $data = $request->validated();
 
-        $existingBooking = Booking::where('time_slot', $data['time_slot'])
-            ->where('date', $data['date'])
-            ->first();
+        $slot = Slot::where('time_slot', $data['time_slot'])->first();
 
-        if ($existingBooking) {
-            return response()->json([
-                'errors' => [
-                    'time_slot' => ['This time slot is already booked for the selected date.']
-                ]
-            ], 422);
+        if (!$slot) {
+            $times = explode('-', $data['time_slot']);
+            $startTime = $times[0] ?? null;
+            $endTime = $times[1] ?? null;
+
+            if ($startTime && $endTime) {
+                $slot = Slot::create([
+                    'time_slot' => $data['time_slot'],
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                ]);
+            } else {
+                return response()->json([
+                    'errors' => ['time_slot' => ['Invalid time slot selected']]
+                ], 422);
+            }
         }
 
         try {
-            $booking = Booking::create($data);
+            $booking = Booking::create([
+                'user_id' => $data['user_id'],
+                'time_slot' => $data['time_slot'],
+                'date' => $data['date']
+            ]);
+
+            $booking->load(['user', 'slot']);
+
             return response()->json([
                 'message' => 'Booking created successfully',
                 'data' => $booking
             ], 201);
 
-        } catch (QueryException $e) {
-            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
-                return response()->json([
-                    'errors' => [
-                        'time_slot' => ['This time slot is already booked for the selected date.']
-                    ]
-                ], 422);
-            }
-
+        }catch (QueryException $e) {
             return response()->json([
-                'message' => 'Database error occurred'
+                'message' => 'Database error occurred',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -63,15 +82,7 @@ class BookingSlotsController extends Controller
 
         $date = $request->input('date');
 
-        $allSlots = [
-            '08:00-09:00',
-            '09:00-10:00',
-            '10:00-11:00',
-            '11:00-12:00',
-            '14:00-15:00',
-            '15:00-16:00',
-            '16:00-17:00'
-        ];
+        $allSlots = Slot::all()->pluck('slot_name')->toArray();
 
         $bookedSlots = Booking::where('date', $date)
             ->pluck('time_slot')
@@ -83,6 +94,18 @@ class BookingSlotsController extends Controller
             'date' => $date,
             'available_slots' => array_values($availableSlots),
             'booked_slots' => $bookedSlots
+        ], 200);
+    }
+    public function myBookings($userId)
+    {
+        $bookings = Booking::with(['user', 'slot'])
+            ->where('user_id', $userId)
+            ->orderBy('date', 'desc')
+            ->orderBy('time_slot')
+            ->get();
+
+        return response()->json([
+            'data' => $bookings
         ], 200);
     }
 }

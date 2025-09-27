@@ -5,8 +5,8 @@ import LoginForm from "../../Forms/LoginForm";
 import RegistrationForm from "../../Forms/RegistrationForm";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { MainDashboard } from "../../Components/User Dashboard/MainDashboard";
-import CheckingStats from "../../Components/User Dashboard/Routing/CheckingStats.tsx";
-import Dana from "../../Components/User Dashboard/Routing/Dana.tsx";
+import CheckingStats from "../../Components/User Dashboard/Routing/Introscreen/CheckingStats.tsx";
+import Dana from "../../Components/User Dashboard/Routing/Dana process/Dana.tsx";
 
 function Main() {
     const [showLogin, setShowLogin] = useState(false);

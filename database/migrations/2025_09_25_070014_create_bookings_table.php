@@ -11,12 +11,10 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('time_slot');
+            $table->string('time_slot'); // Keep for convenience
             $table->date('date');
             $table->timestamps();
 
-
-            $table->unique(['time_slot', 'date']);
         });
     }
 

@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('slots', function (Blueprint $table) {
             $table->id();
-            $table->string('slot_name');
+            $table->string('time_slot');
             $table->string('start_time');
             $table->string('end_time');
             $table->timestamps();

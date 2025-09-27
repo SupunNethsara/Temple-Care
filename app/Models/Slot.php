@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Slot extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['slot_name', 'start_time', 'end_time'];
+    protected $fillable = ['time_slot', 'start_time', 'end_time'];
 
-    public function bookings()
+    public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
     }

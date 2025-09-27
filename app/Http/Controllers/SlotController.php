@@ -17,7 +17,7 @@ class SlotController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'time_slot' => 'required|string|max:255',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
         ]);
@@ -40,7 +40,7 @@ class SlotController extends Controller
         $slot = Slot::findOrFail($id);
 
         $data = $request->validate([
-            'name' => 'sometimes|string|max:255',
+            'time_slot' => 'required|string|max:255',
             'start_time' => 'sometimes|date_format:H:i',
             'end_time' => 'sometimes|date_format:H:i|after:start_time',
         ]);
