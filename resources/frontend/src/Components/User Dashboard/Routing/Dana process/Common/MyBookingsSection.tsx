@@ -9,7 +9,7 @@ export default function MyBookingsSection({
                                           }: MyBookingsSectionProps) {
 
     const formatDateDisplay = (dateString: string) => {
-        const date = new Date(dateString + "T00:00:00");
+        const date = new Date(dateString);
         return date.toLocaleDateString("si-LK", {
             year: "numeric",
             month: "long",
@@ -17,6 +17,7 @@ export default function MyBookingsSection({
             weekday: "long",
         });
     };
+    console.log(myBookings , 'Mu bookings')
 
     return (
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
