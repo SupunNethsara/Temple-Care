@@ -16,7 +16,7 @@ class BookingSlotsController extends Controller
         $date = $request->query('date', today()->format('Y-m-d'));
 
         $bookings = Booking::with(['user', 'slot'])
-            ->where('date', $date)
+            ->whereDate('date', $date)
             ->get();
 
         $bookedSlotIds = $bookings->pluck('slot_id')->toArray();
@@ -28,7 +28,6 @@ class BookingSlotsController extends Controller
         ]);
     }
 
-    // Add this missing method
     public function availableSlots(Request $request): JsonResponse
     {
         $date = $request->query('date', today()->format('Y-m-d'));
