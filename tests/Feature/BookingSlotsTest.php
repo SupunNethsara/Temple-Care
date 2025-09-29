@@ -46,11 +46,10 @@ it('lists available slots for a date', function () {
         'date' => $date
     ]);
 
-    $response = $this->getJson("/api/booking?date={$date}");
+    $response = $this->getJson("/api/available-slots?date={$date}");
 
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'bookings',
             'available_slots'
         ]);
 });

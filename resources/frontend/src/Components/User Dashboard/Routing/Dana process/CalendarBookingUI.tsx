@@ -56,7 +56,7 @@ export default function CalendarBookingUI() {
         setFetchLoading(true);
         try {
             try {
-                const slotsResponse = await axios.get("http://localhost:8000/api/slots");
+                const slotsResponse = await axios.get("http://localhost:8000/api/slo");
                 setSlots(slotsResponse.data);
             } catch (error) {
                 console.warn("Using fallback slots data");
@@ -84,11 +84,11 @@ export default function CalendarBookingUI() {
             const response = await axios.get("http://localhost:8000/api/booking");
             const bookingsData = response.data.data || response.data.all_bookings || [];
             setBookings(bookingsData);
-
             if (userId) {
                 const userBookings = bookingsData.filter((booking: Booking) => booking.user_id === userId);
                 setMyBookings(userBookings);
             }
+            console.log(myBookings);
         } catch (error) {
             console.error("Error fetching bookings:", error);
             showMessage("error", "දත්ත ලබා ගැනීමට නොහැකි විය");

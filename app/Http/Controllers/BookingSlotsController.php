@@ -19,15 +19,11 @@ class BookingSlotsController extends Controller
             ->where('date', $date)
             ->get();
 
-        $availableSlots = Slot::whereNotIn('id', function($query) use ($date) {
-            $query->select('slot_id')
-                ->from('bookings')
-                ->where('date', $date);
-        })->get();
+        $bookedSlotIds = $bookings->pluck('slot_id')->toArray();
 
         return response()->json([
             'bookings' => $bookings,
-            'available_slots' => $availableSlots,
+            'booked_slot_ids' => $bookedSlotIds,
             'date' => $date
         ]);
     }
