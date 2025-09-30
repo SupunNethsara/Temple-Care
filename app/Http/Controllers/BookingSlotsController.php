@@ -4,85 +4,88 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingSlotsRequest;
 use App\Models\Booking;
+use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\JsonResponse;
 
 class BookingSlotsController extends Controller
 {
-    public function index()
+    public function index(Request $request): JsonResponse
     {
-        $bookings = Booking::with('user')->get();
+        $date = $request->query('date', today()->format('Y-m-d'));
+
+        $bookings = Booking::with(['user', 'slot'])
+            ->whereDate('date', $date)
+            ->get();
+
+        $bookedSlotIds = $bookings->pluck('slot_id')->toArray();
 
         return response()->json([
-            'data' => $bookings
-        ], 200);
+            'bookings' => $bookings,
+            'booked_slot_ids' => $bookedSlotIds,
+            'date' => $date
+        ]);
     }
-    public function store(BookingSlotsRequest $request)
+
+    public function availableSlots(Request $request): JsonResponse
+    {
+        $date = $request->query('date', today()->format('Y-m-d'));
+
+        $bookedSlotIds = Booking::where('date', $date)
+            ->pluck('slot_id')
+            ->toArray();
+
+        $availableSlots = Slot::whereNotIn('id', $bookedSlotIds)->get();
+
+        return response()->json([
+            'date' => $date,
+            'available_slots' => $availableSlots
+        ]);
+    }
+
+    public function store(BookingSlotsRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $existingBooking = Booking::where('time_slot', $data['time_slot'])
+        $slot = Slot::where('time_slot', $data['time_slot'])->first();
+
+        if (!$slot) {
+            return response()->json([
+                'message' => 'Slot not found'
+            ], 404);
+        }
+
+        $existingBooking = Booking::where('slot_id', $slot->id)
             ->where('date', $data['date'])
             ->first();
 
         if ($existingBooking) {
             return response()->json([
-                'errors' => [
-                    'time_slot' => ['This time slot is already booked for the selected date.']
-                ]
+                'message' => 'This time slot is already booked for the selected date'
             ], 422);
         }
 
         try {
-            $booking = Booking::create($data);
+            $booking = Booking::create([
+                'user_id' => $data['user_id'],
+                'slot_id' => $slot->id,
+                'time_slot' => $data['time_slot'],
+                'date' => $data['date']
+            ]);
+
+            $booking->load(['user', 'slot']);
+
             return response()->json([
                 'message' => 'Booking created successfully',
-                'data' => $booking
+                'booking' => $booking
             ], 201);
 
         } catch (QueryException $e) {
-            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
-                return response()->json([
-                    'errors' => [
-                        'time_slot' => ['This time slot is already booked for the selected date.']
-                    ]
-                ], 422);
-            }
-
             return response()->json([
-                'message' => 'Database error occurred'
+                'message' => 'Failed to create booking',
+                'error' => $e->getMessage()
             ], 500);
         }
-    }
-    public function availableSlots(Request $request)
-    {
-        $request->validate([
-            'date' => 'required|date'
-        ]);
-
-        $date = $request->input('date');
-
-        $allSlots = [
-            '08:00-09:00',
-            '09:00-10:00',
-            '10:00-11:00',
-            '11:00-12:00',
-            '14:00-15:00',
-            '15:00-16:00',
-            '16:00-17:00'
-        ];
-
-        $bookedSlots = Booking::where('date', $date)
-            ->pluck('time_slot')
-            ->toArray();
-
-        $availableSlots = array_diff($allSlots, $bookedSlots);
-
-        return response()->json([
-            'date' => $date,
-            'available_slots' => array_values($availableSlots),
-            'booked_slots' => $bookedSlots
-        ], 200);
     }
 }

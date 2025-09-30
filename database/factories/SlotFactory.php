@@ -3,25 +3,32 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Slot;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Slot>
- */
 class SlotFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    protected $model = \App\Models\Slot::class;
+    protected $model = Slot::class;
 
     public function definition(): array
     {
+        $timeSlots = [
+            "08:00-09:00",
+            "09:00-10:00",
+            "10:00-11:00",
+            "11:00-12:00",
+            "14:00-15:00",
+            "15:00-16:00",
+            "16:00-17:00",
+        ];
+
+        $slot = $this->faker->randomElement($timeSlots);
+        [$start, $end] = explode('-', $slot);
+
         return [
-            'id' => $this->faker->unique()->randomNumber(),
-            'slot_name' => $this->faker->randomElement(['Morning', 'Afternoon']),
-            'time' => $this->faker->time('H:i') . ' - ' . $this->faker->time('H:i', 'now'),
+            'id' => $this->faker->uuid(), // unique UUID
+            'time_slot' => $slot,
+            'start_time' => $start,
+            'end_time' => $end,
         ];
     }
 }

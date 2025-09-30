@@ -10,13 +10,15 @@ return new class extends Migration {
         Schema::create('bookings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('time_slot');
+            $table->uuid('slot_id');
+            $table->string('time_slot'); // Add this
             $table->date('date');
             $table->timestamps();
 
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('slot_id')->references('id')->on('slots')->cascadeOnDelete();
 
-            $table->unique(['time_slot', 'date']);
+            $table->unique(['user_id', 'slot_id', 'date']);
         });
     }
 
